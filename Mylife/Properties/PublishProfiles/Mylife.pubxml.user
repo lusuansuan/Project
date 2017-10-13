@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+您 Web 项目的发布/打包进程将使用此文件。您可以通过编辑此 MSBuild 文件
+来自定义该进程的行为。若要了解与此相关的详细信息，请访问 http://go.microsoft.com/fwlink/?LinkID=208121。
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>E:\MylifeFabu</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/BLL.dll">
+      <publishTime>10/12/2017 17:30:44</publishTime>
+    </File>
+    <File Include="bin/Common.dll">
+      <publishTime>10/12/2017 17:23:53</publishTime>
+    </File>
+    <File Include="bin/DAL.dll">
+      <publishTime>10/12/2017 17:30:43</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.SignalR.Core.dll">
+      <publishTime>10/12/2017 13:35:50</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AspNet.SignalR.SystemWeb.dll">
+      <publishTime>10/12/2017 13:35:50</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.dll">
+      <publishTime>10/12/2017 13:35:50</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Host.SystemWeb.dll">
+      <publishTime>10/12/2017 13:35:50</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Owin.Security.dll">
+      <publishTime>10/12/2017 13:35:50</publishTime>
+    </File>
+    <File Include="bin/Model.dll">
+      <publishTime>10/12/2017 17:23:53</publishTime>
+    </File>
+    <File Include="bin/Mylife.dll">
+      <publishTime>10/12/2017 18:12:20</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>10/12/2017 13:35:50</publishTime>
+    </File>
+    <File Include="bin/Owin.dll">
+      <publishTime>10/12/2017 13:35:50</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>07/09/2013 11:04:28</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>10/10/2017 14:03:13</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>07/09/2013 11:04:28</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>10/10/2017 14:03:13</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>10/10/2017 14:03:12</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.Deployment.dll">
+      <publishTime>10/10/2017 14:03:13</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.dll">
+      <publishTime>10/10/2017 14:03:13</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.Razor.dll">
+      <publishTime>10/10/2017 14:03:13</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Net.Http.Formatting.resources.dll">
+      <publishTime>07/09/2013 11:33:54</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Helpers.resources.dll">
+      <publishTime>10/10/2017 14:03:14</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Http.resources.dll">
+      <publishTime>07/09/2013 11:33:54</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Mvc.resources.dll">
+      <publishTime>10/10/2017 14:03:14</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Razor.resources.dll">
+      <publishTime>10/10/2017 14:03:13</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Webpages.Deployment.resources.dll">
+      <publishTime>10/10/2017 14:03:14</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Webpages.Razor.resources.dll">
+      <publishTime>10/10/2017 14:03:14</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/System.Web.Webpages.resources.dll">
+      <publishTime>10/10/2017 14:03:14</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>10/10/2017 14:03:12</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>10/12/2017 13:36:07</publishTime>
+    </File>
+    <File Include="Script/jquery.signalR-2.2.2.js">
+      <publishTime>10/10/2017 15:46:16</publishTime>
+    </File>
+    <File Include="Script/jquery.signalR-2.2.2.min.js">
+      <publishTime>10/10/2017 15:46:16</publishTime>
+    </File>
+    <File Include="Scripts/jquery.signalR-2.2.2.js">
+      <publishTime>10/12/2017 13:35:57</publishTime>
+    </File>
+    <File Include="Scripts/jquery.signalR-2.2.2.min.js">
+      <publishTime>10/12/2017 13:35:57</publishTime>
+    </File>
+    <File Include="Views/Home/Login.cshtml">
+      <publishTime>10/12/2017 17:44:53</publishTime>
+    </File>
+    <File Include="Views/web.config">
+      <publishTime>10/10/2017 14:03:12</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>10/12/2017 10:46:27</publishTime>
+    </File>
+    <File Include="Web/css/Chat.css">
+      <publishTime>10/12/2017 17:12:55</publishTime>
+    </File>
+    <File Include="Web/css/login.css">
+      <publishTime>10/10/2017 14:34:06</publishTime>
+    </File>
+    <File Include="Web/html/Chat.html">
+      <publishTime>10/12/2017 10:04:03</publishTime>
+    </File>
+    <File Include="Web/html/Index.html">
+      <publishTime>10/12/2017 17:17:06</publishTime>
+    </File>
+    <File Include="Web/html/main.html">
+      <publishTime>10/12/2017 18:12:03</publishTime>
+    </File>
+    <File Include="Web/images/icon.png">
+      <publishTime>10/12/2017 16:29:07</publishTime>
+    </File>
+    <File Include="Web/images/login/bj_zhuce.jpg">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/login/Default_hdp.jpg">
+      <publishTime>10/11/2017 15:46:12</publishTime>
+    </File>
+    <File Include="Web/images/login/logo.png">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/login/zc_03.jpg">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/login/zc_06.jpg">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/login/zc_10.jpg">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/login/zc_12.jpg">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/login/zc_15.jpg">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/login/zc_16.jpg">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/login/zc_19.jpg">
+      <publishTime>10/10/2017 14:28:10</publishTime>
+    </File>
+    <File Include="Web/images/test1.jpg">
+      <publishTime>10/12/2017 16:29:07</publishTime>
+    </File>
+    <File Include="Web/images/test2.jpg">
+      <publishTime>10/12/2017 16:29:07</publishTime>
+    </File>
+    <File Include="Web/js/getUrlParam.js">
+      <publishTime>10/10/2017 16:46:06</publishTime>
+    </File>
+    <File Include="Web/js/jquery-1.10.2.js">
+      <publishTime>10/10/2017 14:19:22</publishTime>
+    </File>
+    <File Include="Web/js/jquery-1.10.2.min.js">
+      <publishTime>10/10/2017 14:19:22</publishTime>
+    </File>
+    <File Include="Web/js/jquery-1.10.2.min.map">
+      <publishTime>10/10/2017 14:19:22</publishTime>
+    </File>
+    <File Include="Web/js/layer/extend/layer.ext.js">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/layer/layer.js">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/layer/skin/default/icon-ext.png">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/layer/skin/default/icon.png">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/layer/skin/default/loading-0.gif">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/layer/skin/default/loading-1.gif">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/layer/skin/default/loading-2.gif">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/layer/skin/layer.css">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/layer/skin/layer.ext.css">
+      <publishTime>10/10/2017 16:47:05</publishTime>
+    </File>
+    <File Include="Web/js/Public.js">
+      <publishTime>10/12/2017 17:49:03</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
