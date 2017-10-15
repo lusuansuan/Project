@@ -302,8 +302,6 @@ namespace Common
         }
         #endregion
 
-        //ceshi
-
        #region 数据库操作字符串处理语句，以免出错语法错误,过滤含有特殊字符和含有SQL注入式攻击代码
         ///  <summary> 
         /// 数据库操作字符串处理语句，以免出错语法错误
