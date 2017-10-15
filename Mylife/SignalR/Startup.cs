@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Owin;
 using Owin;
 using Microsoft.AspNet.SignalR;
-using System.Web.Http;
 
 [assembly: OwinStartup(typeof(SignalRMVC.SignalR.Startup))]
 
