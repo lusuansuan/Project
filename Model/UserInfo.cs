@@ -129,7 +129,7 @@ namespace Model
 
 
     /// <summary>
-    /// 用于保存Session数据
+    /// 用于保存Session/cache数据
     /// </summary>
     public class SessionUserInfo : UserInfo
     {
@@ -201,4 +201,52 @@ namespace Model
         public List<ChatUserInfo> Users { get; set; }
     }
 
+
+    /// <summary>
+    /// 查询用户信息实体
+    /// </summary>
+    public class SeachUserInfo
+    {
+
+        /// <summary>
+        /// 好友表主键Id
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// 用户编号
+        /// </summary>
+        public int No { get; set; }
+
+        /// <summary>
+        /// 好友用户名
+        /// </summary>
+        public string Account { get; set; }
+
+        /// <summary>
+        /// 好友用户名
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
+        /// 好友头像
+        /// </summary>
+        public string HeadPicture { get; set; }
+
+        /// <summary>
+        /// 好友备注
+        /// </summary>
+        public string Remark { get; set; }
+
+        /// <summary>
+        /// 对方是否是我的好友：0否，1是
+        /// </summary>
+        public string IsFriend { get; set; }
+
+        /// <summary>
+        /// 是否在线：0都，1是
+        /// </summary>
+        public int IsOnline { get; set; }
+
+    }
 }

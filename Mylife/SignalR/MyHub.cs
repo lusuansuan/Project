@@ -54,17 +54,20 @@ namespace SignalRMVC.SignalR
             {
                 //添加在线人员
                 OnLineUsers.Add(GetSignalrUserInfo());
+                //把在线人员添加到缓存
+                Common.CacheHelper<List<SessionUserInfo>>.Insert("OnLineUsers", OnLineUsers);
 
                 //获取好友列表
                 var obj = oFriendsBLL.Friend_GetFriendsList(GetSignalrUserInfo().Id);
                 ReturnModel<List<ChatUserInfo>> models = JsonConvert.DeserializeObject<ReturnModel<List<ChatUserInfo>>>(obj.ToString());
+                var result = new { UserId = GetSignalrUserInfo().Id, Msg = "您的好友 " + GetSignalrUserInfo().UserName + " 上线了" };
                 foreach (ChatUserInfo model in models.Data)
                 {
                     //标记上线的好友并加入我的在线好友集合
                     if (OnLineUsers.Count(x => x.Id == model.FriendId) > 0)
                     {
                         model.IsOnline = 1;
-                        Clients.User(model.FriendId.ToString()).onLineTips("您的好友 " + GetSignalrUserInfo().UserName + " 上线了");
+                        Clients.User(model.FriendId.ToString()).onLineTips(result);
                         //Groups.Add(model.FriendId.ToString(), GetSignalrUserInfo().Account+"的在线好友");                        
                     }                  
                 }
@@ -81,13 +84,24 @@ namespace SignalRMVC.SignalR
         /// </summary>
         /// <param name="ToId">接收人ID</param>
         /// <param name="message">信息</param>
-        public void sendMessage(string ToId, string message)
+        public void sendMessage(string strmodel)
         {
             UserInfo = GetSignalrUserInfo();
-            message = HttpUtility.HtmlEncode(message);
-            string UserID = UserInfo.Id.ToString();
-            string fromName = UserInfo.Account;
-            Clients.User(ToId).sendMessage(message);
+            Friends_Chat model = JsonConvert.DeserializeObject<Friends_Chat>(strmodel);
+            model.Id = Guid.NewGuid();
+            model.SenderId = UserInfo.Id;
+            ReturnModel remodel = JsonConvert.DeserializeObject<ReturnModel>(oFriendsBLL.Friend_AddFriendsChatList(model).ToString());
+            if (remodel.Code == 1)
+            {
+                var obj = new { Code = 1, Msg = "发送成功",SendType = model.SendType, SendContent = model.SendContent, ReceiverHeadPic = UserInfo.HeadPicture, ReceiverName = UserInfo.UserName, UpdateTime = DateTime.Now.ToLongTimeString()};
+                Clients.User(model.OwnerId.ToString()).sendMessage(obj);
+                Clients.Caller.sendFailTips(obj);
+            }
+            else
+            {
+                var obj = new { Code = 0, Msg = "发送失败" };
+                Clients.Caller.sendFailTips(obj);
+            }
         }
 
         /// <summary>

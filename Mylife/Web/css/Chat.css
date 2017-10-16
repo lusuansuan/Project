@@ -14,7 +14,7 @@ li{list-style:none;}
 .layim_chatbox a, .layim_chatbox a:hover{color:#343434; text-decoration:none; }
 .layim_zero{position:absolute; width:0; height:0; border-style:dashed; border-color:transparent; overflow:hidden;}
 
-.xxim_main{position:fixed; right:1px; bottom:1px; width:230px; border:1px solid #BEBEBE; background-color:#fff; font-size:12px; box-shadow: 0 0 10px rgba(0,0,0,.2); z-index:1989}
+.xxim_main{position:fixed; right:1px; bottom:1px; width:300px; border:1px solid #BEBEBE; background-color:#fff; font-size:12px; box-shadow: 0 0 10px rgba(0,0,0,.2); z-index:1989}
 .layim_chatbox textarea{resize:none;}
 .xxim_main em, .xxim_main i, .layim_chatbox em, .layim_chatbox i{font-style:normal; font-weight:400;}
 .xxim_main h5{font-size:100%; font-weight:400;}
@@ -28,7 +28,7 @@ li{list-style:none;}
 
 /* ä¸»é¢æ¿tab */
 .xxim_tabs{height:45px; border-bottom:1px solid #DBDBDB; background-color:#F4F4F4; font-size:0;}
-.xxim_tabs span{position:relative; display:inline-block; *display:inline; *zoom:1; vertical-align:top; width:76px; height:45px; border-right:1px solid #DBDBDB; cursor:pointer; font-size:12px;}
+.xxim_tabs span{position:relative; display:inline-block; *display:inline; *zoom:1; vertical-align:top; width:99px; height:45px; border-right:1px solid #DBDBDB; cursor:pointer; font-size:12px;}
 .xxim_tabs span i{top:13px; left:50%; width:19px; margin-left:-10px; height:18px;}
 .xxim_tabs .xxim_tabnow{height:46px; background-color:#fff;}
 .xxim_tabs .xxim_latechat{border-right:none;}
@@ -167,11 +167,11 @@ li{list-style:none;}
 }
 .layout-P{
 	position: absolute;
-	top: 10%;
-	left: 10%;
+	top: 15%;
+	left: 32%;
 	border:1px solid #ccc;
-	width: 490px;
-	height: 400px;
+	width: 600px;
+	height: 550px;
 }
 .titleCls{
 	background: #fdfef9;
@@ -221,7 +221,8 @@ li{list-style:none;}
 
 .msgCls{
 	padding:10px;
-	height: 200px;
+	height: 350px;
+    overflow-y:auto;
 }
 
 .Msg>span{
@@ -294,4 +295,10 @@ li{list-style:none;}
     line-height: 20px;
     border-radius: 2px;
     text-align: left;
+}
+
+
+/*******ldw ********/
+.SeachKeyCls {
+color:blue;
 }
