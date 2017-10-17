@@ -78,5 +78,42 @@ namespace BLL
         }
 
 
+
+        /// <summary>
+        /// 获取好友申请列表
+        /// </summary>
+        /// <param name="UserId">当前用户Id</param>
+        /// <returns></returns>
+        public object Friend_GetFriendsApplyList(Guid UserId)
+        {
+            DataSet ds = oFriendsDAL.Friend_GetFriendsApplyList(UserId);
+            return Common.JsonHelper.ToJson_L(ds,0,0,false);
+        }
+
+
+        /// <summary>
+        /// 审核好友申请
+        /// </summary>
+        /// <param name="Id">好友申请主键Id</param>
+        /// <param name="State">审核状态:-1删除,0拒绝，1同意</param>
+        /// <returns></returns>
+        public object Friend_AuditFriendsApply(Guid Id, Int32 State)
+        {
+            DataSet ds = oFriendsDAL.Friend_AuditFriendsApply(Id, State);
+            return Common.JsonHelper.ToJson_L(ds);
+        }
+
+        /// <summary>
+        /// 获取未读好友申请个数
+        /// </summary>
+        /// <param name="UserId">当前用户Id</param>
+        /// <returns></returns>
+        public object Friend_GetUnReadFriendsApplyCount(Guid UserId)
+        {
+            DataSet ds = oFriendsDAL.Friend_GetUnReadFriendsApplyCount(UserId);
+            return Common.JsonHelper.ToJson_L(ds);
+        }
+
+
     }
 }

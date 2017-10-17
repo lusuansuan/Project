@@ -178,6 +178,11 @@ namespace Model
         /// </summary>
         public int IsOnline { get; set; }
 
+        /// <summary>
+        /// 未读消息数
+        /// </summary>
+        public int UnReadNum { get; set; }
+
     }
 
     /// <summary>

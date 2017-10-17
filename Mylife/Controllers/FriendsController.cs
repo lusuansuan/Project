@@ -67,12 +67,48 @@ namespace Mylife.Controllers
             return Json(remodel);
         }
 
+
+        /// <summary>
+        /// 添加好友申请
+        /// </summary>
+        /// <param name="strmodel"></param>
         public void Friend_AddFriendsApply(string strmodel)
         {
             Friends_Apply model = JsonConvert.DeserializeObject<Friends_Apply>(strmodel);
             model.Id = Guid.NewGuid();
             model.ApplyerId = GetUserInfo().Id;
             var obj = oFriendsBLL.Friend_AddFriendsApply(model);
+            JsonResponse(obj.ToString());
+        }
+
+
+        /// <summary>
+        /// 获取好友申请列表
+        /// </summary>
+        public void Friend_GetFriendsApplyList()
+        {
+            var obj = oFriendsBLL.Friend_GetFriendsApplyList(GetUserInfo().Id);
+            JsonResponse(obj.ToString());
+        }
+
+
+        /// <summary>
+        /// 审核好友申请
+        /// </summary>
+        /// <param name="Id">好友申请主键Id</param>
+        /// <param name="State">审核状态:-1删除,0拒绝，1同意</param>
+        public void Friend_AuditFriendsApply(string Id, int State)
+        {
+            var obj = oFriendsBLL.Friend_AuditFriendsApply(Guid.Parse(Id), State);
+            JsonResponse(obj.ToString());
+        }
+
+        /// <summary>
+        /// 获取未读好友申请个数
+        /// </summary>
+        public void Friend_GetUnReadFriendsApplyCount()
+        {
+            var obj = oFriendsBLL.Friend_GetUnReadFriendsApplyCount(GetUserInfo().Id);
             JsonResponse(obj.ToString());
         }
 

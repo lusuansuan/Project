@@ -65,11 +65,23 @@ namespace Mylife.Controllers
                 HttpPostedFile file = System.Web.HttpContext.Current.Request.Files[name];
                 model.HeadPicture = Common.Common.UploadImg(file,Common.CommonData.GetSrc(Common.UploadSrc.HeadPicture, model.Account));
             }
+            if (model.HeadPicture == "UploadImg-Error")
+            {
+                return Json(new {Code =0,Msg ="图片上传失败"});
+            }
             var obj = oHomeBLL.Register(model);
             return Json(js.DeserializeObject(obj.ToString()));
         }
 
-
+        /// <summary>
+        /// 注销
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult Logout()
+        {
+            Session["UserInfo"] = null;
+            return Json(new {Code=1,Msg="退出成功"});
+        }
 
 
 

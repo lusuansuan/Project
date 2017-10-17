@@ -63,11 +63,13 @@ namespace Common
                 //生成新名称
                 string NewName = GetEtcOfFileName(file.FileName);    
                 //不带名称的绝对路径
-                string SavePath = @"" + Read_WebConfigSetting("PhyPath") + path;
+                string SavePath = @"" + Read_WebConfigSetting("PhyPath") + path; 
+                //string SavePath = System.Web.HttpContext.Current.Server.MapPath(path);
                 if (!Directory.Exists(SavePath))
                 {
                     Directory.CreateDirectory(SavePath);
                 }
+                
                 //保存图片
                 file.SaveAs(SavePath + NewName);
                 /*压缩图*/
@@ -98,6 +100,7 @@ namespace Common
                 string NewName = GetEtcOfFileName(file.FileName);
                 //不带名称的绝对路径
                 string SavePath = @"" + Read_WebConfigSetting("PhyPath") + path; 
+                //string SavePath = System.Web.HttpContext.Current.Server.MapPath(path);
                 if (!Directory.Exists(SavePath))
                 {
                     Directory.CreateDirectory(SavePath);

@@ -128,7 +128,67 @@ namespace DAL
            }
        }
 
+       /// <summary>
+       /// 获取好友申请列表
+       /// </summary>
+       /// <param name="UserId">当前用户Id</param>
+       /// <returns></returns>
+       public DataSet Friend_GetFriendsApplyList(Guid UserId)
+       {
+           try
+           {
+               List<IDataParameter> LstParam = new List<IDataParameter>();
+               LstParam.Add(Common.OADBHelperSQL.CreateParameter("@UserId", SqlDbType.UniqueIdentifier, UserId));
+               return Common.OADBHelperSQL.RunProcedure("pFriend_GetFriendsApplyList", LstParam.ToArray(), "Data");
+           }
+           catch (Exception ex)
+           {
+               return Common.OADBHelperSQL.CustomDataSet(false);
+           }
+       }
 
+
+       /// <summary>
+       /// 审核好友申请
+       /// </summary>
+       /// <param name="Id">好友申请主键Id</param>
+       /// <param name="State">审核状态:-1删除,0拒绝，1同意</param>
+       /// <returns></returns>
+       public DataSet Friend_AuditFriendsApply(Guid Id,Int32 State)
+       {
+           try
+           {
+               List<IDataParameter> LstParam = new List<IDataParameter>();
+               LstParam.Add(Common.OADBHelperSQL.CreateParameter("@Id", SqlDbType.UniqueIdentifier, Id));
+               LstParam.Add(Common.OADBHelperSQL.CreateParameter("@State", SqlDbType.Int, State));
+               return Common.OADBHelperSQL.RunProcedure("pFriend_AuditFriendsApply", LstParam.ToArray(), "Data");
+           }
+           catch (Exception ex)
+           {
+               return Common.OADBHelperSQL.CustomDataSet(false);
+           }
+       }
+
+
+
+       /// <summary>
+       /// 获取未读好友申请个数
+       /// </summary>
+       /// <param name="UserId">当前用户Id</param>
+       /// <returns></returns>
+       public DataSet Friend_GetUnReadFriendsApplyCount(Guid UserId)
+       {
+           try
+           {
+               List<IDataParameter> LstParam = new List<IDataParameter>();
+               LstParam.Add(Common.OADBHelperSQL.CreateParameter("@UserId", SqlDbType.UniqueIdentifier, UserId));
+               return Common.OADBHelperSQL.RunProcedure("pFriend_GetUnReadFriendsApplyCount", LstParam.ToArray(), "Data");
+           }
+           catch (Exception ex)
+           {
+               return Common.OADBHelperSQL.CustomDataSet(false);
+           }
+       }
 
 
     }

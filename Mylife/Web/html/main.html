@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>即时通讯1</title>
+    <title></title>
     <link rel="stylesheet" href="../css/Chat.css">
     <link href="../js/layer/skin/layer.css" rel="stylesheet" />
     <script src="../js/jquery-1.10.2.min.js"></script>
@@ -12,6 +12,23 @@
     <style>
         .marR{
             margin-right:-232px;
+        }
+        .listImg{
+            position:relative;
+        } 
+        .redCls {
+            background: #ff0000 !important;
+            color: #fff;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            text-align: center;
+            right: 20px;
+            top: 14px;
+        }
+        .marTB20 {
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -29,11 +46,19 @@
             </ul>            
         </div>
         <ul class="xxim_bottom" id="xxim_bottom">
+            <li class="xxim_mymsg" id="xxim_mymsg" onclick="Friend_GetFriendsApplyList()" title="好友申请">
+                <i></i>   
+                <span style="position:relative;" class="Tips">
+                    
+                </span>         
+            </li>
             <li class="xxim_seter" id="xxim_seter" title="设置">
                 <i></i>
                 <div class=""></div>
             </li>
+            <li class="xxim_hide" id="xxim_hide" title="注销" onclick="Logout()"><i></i></li>
             <li id="xxim_on" class="xxim_icon xxim_on" onclick="hideList()"></li>
+            
         </ul>
     </div>
        
@@ -43,7 +68,7 @@
         <div class="titleCls">
             <img src="../images/test1.jpg" class="bigImg topHdp">
             <span class="topName"></span>
-            -<i class="IsOnline"></i>
+            - <i class="IsOnline"></i>
             <div class="text-R">
                 <!--<i class="icon-jian"></i>-->
                 <b class="icon-cha" onclick="closeWin()"></b>
@@ -64,7 +89,7 @@
         </div>
         <textarea class="areaCls" id="ReplyContent"></textarea>
         <div class="bg-f3">
-            <span class="buttonCls fontS12" id="SenBtn">发送</span>
+            <span class="buttonCls fontS12" onclick="Friend_AddFriendsChatList()">发送</span>
         </div>
     </div>
 
@@ -76,7 +101,7 @@
         $(function () {
 
             //建立與Server端的Hub的物件，注意Hub的開頭字母一定要為小寫
-            var chat = $.connection.ConHub;
+            chat = $.connection.ConHub;
 
             //當連線完成後，呼叫Server端的connect方法
             $.connection.hub.start().done(function ()
@@ -84,10 +109,11 @@
                 chat.server.connect();
             });
 
-            //获取好友列表--Server端呼叫client端getFriendsList方法
+            //获取好友列表(给自己)--Server端呼叫client端getFriendsList方法
             chat.client.getFriendsList = function (res)//
             {
                 var strhtml = '';
+                console.log(res);
                 if (res.Code == 1)//
                 {
                     $.each(res.Data, function (index, item) {
@@ -95,27 +121,34 @@
                         strhtml += '<li class="listImg" id="' + item.FriendId + '" ondblclick="showPage(this,\'' + item.FriendId + '\',\'' + GetPhyPath(item.HeadPicture) + '\',\'' + item.Remark + '(' + item.UserName + ')' + '\',\'' + IsOnline + '\')" >';
                         strhtml += ' <img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg">  &emsp;<span>' + item.Remark + '(' + item.UserName + ')</span>';
                         strhtml += ' &emsp;<span>' + IsOnline + '</span>';
+                        if (item.UnReadNum > 0) //
+                        {
+                            strhtml += '<i class="redCls">' + item.UnReadNum + '</i>';
+                        } 
                         strhtml += '</li>';
                     })
                     $('#xximmm').find('.xxim_list:eq(0)').html(strhtml);
                 }
             }
 
-            //好友上线提示--Server端呼叫client端onLineTips方法
+            //好友上线提示(给好友)--Server端呼叫client端onLineTips方法
             chat.client.onLineTips = function (res)//
             {
-                LayerMsg(res.Msg);
+                //LayerMsg(res.Msg);
                 $('#' + res.UserId).find('span:last').text("在线");
             }
 
-            //消息发送失败提示--Server端呼叫client端sendFailTips方法
-            chat.client.sendFailTips = function (res)//
+            //消息发送提示(给自己)--Server端呼叫client端sendFailTips方法
+            chat.client.sendMsgTips = function (res)//
             {
                 if (res.Code == 0)//发送失败
                 {
                     LayerMsg(res.Msg);
                     return;
                 }
+                //好友列表如果有该好友的消息提示则移除
+                $('#' + res.FriendId).find('.redCls').remove();
+
                 var strhtml = '';
                 strhtml += '<div class="Msg text-R">';
                 strhtml += '<div>';
@@ -129,9 +162,19 @@
                 $('#ChatList').scrollTop($('#ChatList')[0].scrollHeight);
             }
 
-            //给选择的人员发送信息--Server端呼叫client端sendMessage方法
+            //给选择的人员发送信息(给好友)--Server端呼叫client端sendMessage方法
             chat.client.sendMessage = function (res)//
             {
+                //给好友列表发送消息提示
+                if ($('#' + res.SenderId).find('.redCls').length == 0)//没有消息提示
+                {
+                    $('#' + res.SenderId).append('<i class="redCls">1</i>');
+                } else//存在消息提示
+                {
+                    var UnReadNum = parseInt($('#' + res.SenderId).find('.redCls').text());
+                    $('#' + res.SenderId).find('.redCls').text(UnReadNum+1);
+                }
+
                 var strhtml = '';
                 strhtml += '<div class="Msg text-L">';
                 strhtml += '<div>';
@@ -145,25 +188,35 @@
                 $('#ChatList').scrollTop($('#ChatList')[0].scrollHeight);
             }
 
-            //点击发送消息
-            $("#SenBtn").click(function () {
-                var Content = $('#ReplyContent').val();
-                if (Content == "")//
-                {
-                    layerMsg('请输入内容');
-                    return;
-                }
-                var strmodel = {
-                    OwnerId: ComFriendId,//接收者Id
-                    SendContent: Content,// 聊天内容
-                    SendType: '0', //发送类型：0文本，1图片，2语音                  
-                }
-                $("#ReplyContent").val('');
-                //呼叫Server端的sendMessage方法
-                chat.server.sendMessage(JSON.stringify(strmodel));
-            });
+            //添加好友申请提示(给自己)--Server端呼叫client端sendFailTips方法
+            chat.client.applyTips = function (res)//
+            {
+                LayerMsg(res.Msg);
+            }
 
+            //添加好友申请提示(给好友)--Server端呼叫client端sendMessage方法
+            chat.client.applyTipsToFriend = function (res)//
+            {
+                $('.Tips').css("background", "#f00");
+            }
         });
+
+        //加载事件
+        $(function () {
+
+            GetMsgTips();
+        })
+
+        //获取消息提示
+        function GetMsgTips()
+        {
+            $.post('/Friends/Friend_GetUnReadFriendsApplyCount', function (res) {
+                if (res.Data.UnReadFriendApplyNum > 0)//有数据
+                {
+                    $('.Tips').css("background", "#f00");
+                }
+            })
+        }
 
         //隐藏好友列表
         function hideList()//
@@ -180,13 +233,16 @@
         var Page = 1;
         var ComFriendId = '';//当前聊天好友Id
         //打开聊天窗口
-        function showPage(persent, FriendId, HeadPicture, UserName, IsOnline)//
+        function showPage(obj, FriendId, HeadPicture, UserName, IsOnline)//
         {
             $('.topHdp').attr('src', HeadPicture)
             $('.topName').text(UserName);
             $('.IsOnline').text(IsOnline);
             $('.layout-P').addClass(FriendId);
             $('.layout-P').show();
+
+            $(obj).find('.redCls').remove();
+
             Page = 1;
             ComFriendId = FriendId;
             Friend_GetFriendsChatList_ForPage()
@@ -199,6 +255,14 @@
             $('.layout-P').hide();
         }
 
+        //注销账号
+        function Logout()
+        {
+            $.post('/Home/Logout', function (res) {
+                window.location.href = '/';
+            })
+        }
+
         //获取和好友的聊天记录-分页
         function Friend_GetFriendsChatList_ForPage()//
         {
@@ -209,7 +273,7 @@
                     $.each(res.Data.Items.reverse(), function (index, item) {
                         if (item.IsOwner == 1)//自己发的
                         {
-                            strhtml += '<div class="Msg text-R">';
+                            strhtml += '<div class="Msg text-R marTB20">';
                             strhtml += '<div>';
                             strhtml += '<span class="col-gray">' + item.UpdateTime + '</span> ';
                             //strhtml += '<i class="marLR">'++'</i>';
@@ -219,7 +283,7 @@
                             strhtml += '</div>';
                         } else //好友发的
                         {
-                            strhtml += '<div class="Msg text-L">';
+                            strhtml += '<div class="Msg text-L marTB20">';
                             strhtml += '<div>';
                             strhtml += '<img src="' + GetPhyPath(item.ReceiverHeadPic) + '" alt="" class="smallImg">';
                             //strhtml += '<i class="marLR">' + item.ReceiverName + '</i>&emsp;';
@@ -241,6 +305,25 @@
             })
         }
 
+        //发送消息
+        function Friend_AddFriendsChatList()
+        {
+            var Content = $('#ReplyContent').val();
+            if (Content == "")//
+            {
+                layerMsg('请输入内容');
+                return;
+            }
+            var strmodel = {
+                OwnerId: ComFriendId,//接收者Id
+                SendContent: Content,// 聊天内容
+                SendType: '0', //发送类型：0文本，1图片，2语音                  
+            }
+            $("#ReplyContent").val('');
+            //呼叫Server端的sendMessage方法
+            chat.server.sendMessage(JSON.stringify(strmodel));
+        }
+
         //查询用户
         function Friend_SeachUserInfoList()//
         {
@@ -251,7 +334,6 @@
                 return;
             }
             $.post('/Friends/Friend_SeachUserInfoList', { SeachKey: SeachKey }, function (res) {
-                console.log(res);
                 var strhtml = '';
                 if (res.Code == 1)//
                 {
@@ -267,7 +349,7 @@
                             strhtml += ' &emsp;<span>' + IsOnline + '</span>';
                         } else//
                         {
-                            strhtml += ' &emsp;<input type="button" onclick="Friend_AddFriendsApply(\'' + item.Id + '\')" value="添加好友" />';
+                            strhtml += ' &emsp;<input type="button" class="FriendsApply" onclick="Friend_AddFriendsApply(\'' + item.Id + '\')" value="添加好友" />';
                         }
                         strhtml += '</li>';
                     })
@@ -306,8 +388,52 @@
                 OwnerId: FriendId,
                 Remark :''
             }
-            $.post('/Friends/Friend_AddFriendsApply', { strmodel: JSON.stringify(strmodel) }, function (res) {
-                console.log(res);
+            chat.server.addFriendsApply(JSON.stringify(strmodel));
+            //$.post('/Friends/Friend_AddFriendsApply', { strmodel: JSON.stringify(strmodel) }, function (res) {
+            //    LayerMsg(res.Msg);
+            //})
+        }
+
+        //获取好友申请列表
+        function Friend_GetFriendsApplyList()//
+        {
+            //移除红点
+            $('.Tips').css("background", "#fff");
+
+            $.post('/Friends/Friend_GetFriendsApplyList',  function (res) {
+                var strhtml = '';
+                if (res.Code == 1)//
+                {
+                    $.each(res.Data, function (index, item) {
+                        strhtml += '<li class="listImg" ondblclick="" >';
+                        strhtml += ' <img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg">  &emsp;<span>' + item.Account + '</span>';
+                        if (item.IsApply != '0')//
+                        {
+                            strhtml += ' &emsp;<span>' + (item.IsApply == "1"?'已接受' :'已拒绝') + '</span>';
+                        } else//
+                        {
+                            strhtml += ' &emsp;<input type="button" onclick="Friend_AuditFriendsApply(\'' + item.Id + '\',1)" value="同意" />';
+                        }
+                        strhtml += '</li>';
+                    })
+                    if (res.Data.length == 0)//
+                    {
+                        strhtml = '<li class="listImg">没有申请...</li>';
+                    }
+                    $('#xximmm').find('.xxim_list:eq(0)').html(strhtml);
+                }
+            })
+        }
+
+        //审核好友申请
+        function Friend_AuditFriendsApply(Id,State)
+        {
+            $.post('/Friends/Friend_AuditFriendsApply', { Id: Id, State: State }, function (res) {
+                LayerMsg(res.Msg);
+                if (res.Code == 1)//
+                {
+                    Friend_GetFriendsApplyList();
+                }
             })
         }
 

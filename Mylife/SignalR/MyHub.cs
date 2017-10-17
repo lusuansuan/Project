@@ -93,16 +93,35 @@ namespace SignalRMVC.SignalR
             ReturnModel remodel = JsonConvert.DeserializeObject<ReturnModel>(oFriendsBLL.Friend_AddFriendsChatList(model).ToString());
             if (remodel.Code == 1)
             {
-                var obj = new { Code = 1, Msg = "发送成功",SendType = model.SendType, SendContent = model.SendContent, ReceiverHeadPic = UserInfo.HeadPicture, ReceiverName = UserInfo.UserName, UpdateTime = DateTime.Now.ToLongTimeString()};
+                var obj = new { Code = 1, Msg = "发送成功", FriendId = model.OwnerId, SenderId = model.SenderId, SendType = model.SendType, SendContent = model.SendContent, ReceiverHeadPic = UserInfo.HeadPicture, ReceiverName = UserInfo.UserName, UpdateTime = DateTime.Now.ToLongTimeString() };
                 Clients.User(model.OwnerId.ToString()).sendMessage(obj);
-                Clients.Caller.sendFailTips(obj);
+                Clients.Caller.sendMsgTips(obj);
             }
             else
             {
                 var obj = new { Code = 0, Msg = "发送失败" };
-                Clients.Caller.sendFailTips(obj);
+                Clients.Caller.sendMsgTips(obj);
             }
         }
+
+        /// <summary>
+        /// 添加好友申请
+        /// </summary>
+        /// <param name="strmodel"></param>
+        public void addFriendsApply(string strmodel)
+        {
+            Friends_Apply model = JsonConvert.DeserializeObject<Friends_Apply>(strmodel);
+            model.Id = Guid.NewGuid();
+            model.ApplyerId = GetSignalrUserInfo().Id;
+            var obj = oFriendsBLL.Friend_AddFriendsApply(model);
+            ReturnModel remodel = JsonConvert.DeserializeObject<ReturnModel>(obj.ToString());
+            if (remodel.Code == 1)
+            {
+                Clients.User(model.OwnerId.ToString()).applyTipsToFriend(remodel);                
+            }
+            Clients.Caller.applyTips(remodel);
+        }
+
 
         /// <summary>
         /// 离线
