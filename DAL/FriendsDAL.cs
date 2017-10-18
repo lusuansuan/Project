@@ -33,7 +33,7 @@ namespace DAL
        }
 
        /// <summary>
-       /// 获取和好友的聊天记录-分页
+       /// 获取和单个好友的聊天记录-分页
        /// </summary>
        /// <param name="UserId">当前用户Id</param>
        /// <param name="FriendId">好友用户Id</param>
@@ -183,6 +183,25 @@ namespace DAL
                List<IDataParameter> LstParam = new List<IDataParameter>();
                LstParam.Add(Common.OADBHelperSQL.CreateParameter("@UserId", SqlDbType.UniqueIdentifier, UserId));
                return Common.OADBHelperSQL.RunProcedure("pFriend_GetUnReadFriendsApplyCount", LstParam.ToArray(), "Data");
+           }
+           catch (Exception ex)
+           {
+               return Common.OADBHelperSQL.CustomDataSet(false);
+           }
+       }
+
+       /// <summary>
+       /// 获取最近聊天记录-最新50条
+       /// </summary>
+       /// <param name="UserId">当前用户Id</param>
+       /// <returns></returns>
+       public DataSet Friend_GetFriendsNewsList(Guid UserId)
+       {
+           try
+           {
+               List<IDataParameter> LstParam = new List<IDataParameter>();
+               LstParam.Add(Common.OADBHelperSQL.CreateParameter("@UserId", SqlDbType.UniqueIdentifier, UserId));
+               return Common.OADBHelperSQL.RunProcedure("pFriend_GetFriendsNewsList", LstParam.ToArray(), "Data");
            }
            catch (Exception ex)
            {

@@ -16,7 +16,7 @@ namespace Mylife.Controllers
 
 
         /// <summary>
-        /// 获取和好友的聊天记录-分页
+        /// 获取和单个好友的聊天记录-分页
         /// </summary>
         /// <param name="FriendId">好友用户Id</param>
         /// <param name="Page">页码索引</param>
@@ -40,6 +40,27 @@ namespace Mylife.Controllers
             {
                 model.IsOnline = 0;
                 if (models.Count(x => x.Id == model.Id) > 0)
+                {
+                    model.IsOnline = 1;
+                }
+            }
+            return Json(remodel);
+        }
+
+
+        /// <summary>
+        /// 获取最近聊天记录-最新50条
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult Friend_GetFriendsNewsList()
+        {
+            var obj = oFriendsBLL.Friend_GetFriendsNewsList(GetUserInfo().Id);
+            List<SessionUserInfo> models = Common.CacheHelper<List<SessionUserInfo>>.GetCache("OnLineUsers");
+            ReturnModel<List<ChatUserInfo>> remodel = JsonConvert.DeserializeObject<ReturnModel<List<ChatUserInfo>>>(obj.ToString());
+            foreach (ChatUserInfo model in remodel.Data)
+            {
+                model.IsOnline = 0;
+                if (models.Count(x => x.Id == model.FriendId) > 0)
                 {
                     model.IsOnline = 1;
                 }

@@ -144,7 +144,7 @@ namespace Model
     {
 
         /// <summary>
-        /// 好友表主键Id
+        /// 聊天表主键Id
         /// </summary>
         public Guid Id { get; set; }
 
@@ -154,9 +154,9 @@ namespace Model
         public Guid FriendId { get; set; }
 
         /// <summary>
-        /// 好友用户名
+        /// 好友账号
         /// </summary>
-        public string UserName { get; set; }
+        public string Account { get; set; }
 
         /// <summary>
         /// 好友头像
@@ -164,12 +164,27 @@ namespace Model
         public string HeadPicture { get; set; }
 
         /// <summary>
-        /// 好友备注
+        /// 好友备注/好友账号名
         /// </summary>
         public string Remark { get; set; }
 
         /// <summary>
-        /// 当前用户是否为对方好友：0否，1是
+        /// 最新一条聊天记录
+        /// </summary>
+        public string SendContent { get; set; }
+
+        /// <summary>
+        /// 最新一条发送时间
+        /// </summary>
+        public DateTime UpdateTime { get; set; }
+
+        /// <summary>
+        /// 未读消息数
+        /// </summary>
+        public int UnReadNum { get; set; }
+
+        /// <summary>
+        /// 我是否为对方好友：0否，1是
         /// </summary>
         public string State { get; set; }
 
@@ -179,9 +194,9 @@ namespace Model
         public int IsOnline { get; set; }
 
         /// <summary>
-        /// 未读消息数
+        /// 对方是否是我的好友：0否，1是
         /// </summary>
-        public int UnReadNum { get; set; }
+        public string IsFriend { get; set; }
 
     }
 

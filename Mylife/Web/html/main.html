@@ -10,26 +10,7 @@
     <script src="../js/Public.js"></script>
     <script src="../js/layer/layer.js"></script>
     <style>
-        .marR{
-            margin-right:-232px;
-        }
-        .listImg{
-            position:relative;
-        } 
-        .redCls {
-            background: #ff0000 !important;
-            color: #fff;
-            height: 14px;
-            width: 14px;
-            border-radius: 50%;
-            display: inline-block;
-            text-align: center;
-            right: 20px;
-            top: 14px;
-        }
-        .marTB20 {
-            margin: 20px 0;
-        }
+       
     </style>
 </head>
 <body>
@@ -38,11 +19,10 @@
     <div id="xximmm" class="xxim_main">
         <div class="xxim_top" id="xxim_top">
             <div class="xxim_search">
-                <i onclick="Friend_SeachUserInfoList()"></i><input id="xxim_searchkey">
-                <span id="xxim_closesearch">×</span>
+                <i onclick="Friend_SeachUserInfoList()"></i><input id="xxim_searchkey">                
             </div>
-            <div class="xxim_tabs" id="xxim_tabs"><span class="xxim_tabfriend xxim_tabnow" title="好友"><i></i></span><span class="xxim_tabgroup" title="群组"><i></i></span><span class="xxim_latechat" title="最近聊天"><i></i></span></div>
-            <ul class="xxim_list" style="display: block;">              
+            <div class="xxim_tabs" id="xxim_tabs"><span class="xxim_latechat xxim_tabnow" title="最近聊天" onclick="ToggleTab(0)"><i></i></span><span class="xxim_tabfriend " title="好友" onclick="ToggleTab(1)"><i></i></span><span class="xxim_tabgroup" title="群组" onclick="ToggleTab(2)"><i></i></span></div>           
+            <ul class="xxim_list" style="display: block;overflow-y:scroll;">              
             </ul>            
         </div>
         <ul class="xxim_bottom" id="xxim_bottom">
@@ -66,26 +46,22 @@
     <div class="layout-P" style="display:none;">
         <!-- 头部 -->
         <div class="titleCls">
-            <img src="../images/test1.jpg" class="bigImg topHdp">
+            <img src="" class="bigImg topHdp">
             <span class="topName"></span>
-            - <i class="IsOnline"></i>
             <div class="text-R">
-                <!--<i class="icon-jian"></i>-->
                 <b class="icon-cha" onclick="closeWin()"></b>
             </div>
         </div>
         <!-- 消息 -->
+        
         <div class="msgCls" id="ChatList">
+        <p style="text-align:center;cursor:pointer;" id="LoadMore">加载更多</p>
         </div>
         <!--  操作栏 -->
         <div class="operationCls">
             <i class="icon icon-bq"></i>
             <i class="icon icon-tp"></i>
-            <i class="icon icon-fj"></i>
-            <div class="text-R">
-                <i class="icon icon-jl"></i>
-                <span class="fontS12">聊天记录</span>
-            </div>
+            <i class="icon icon-fj"></i>            
         </div>
         <textarea class="areaCls" id="ReplyContent"></textarea>
         <div class="bg-f3">
@@ -109,18 +85,16 @@
                 chat.server.connect();
             });
 
-            //获取好友列表(给自己)--Server端呼叫client端getFriendsList方法
-            chat.client.getFriendsList = function (res)//
+            //获取最近聊天列表(给自己)--Server端呼叫client端getFriendsList方法
+            chat.client.getFriendsNewsList = function (res)//
             {
                 var strhtml = '';
-                console.log(res);
                 if (res.Code == 1)//
                 {
                     $.each(res.Data, function (index, item) {
-                        var IsOnline = item.IsOnline == 1 ? "在线" : "离线";
-                        strhtml += '<li class="listImg" id="' + item.FriendId + '" ondblclick="showPage(this,\'' + item.FriendId + '\',\'' + GetPhyPath(item.HeadPicture) + '\',\'' + item.Remark + '(' + item.UserName + ')' + '\',\'' + IsOnline + '\')" >';
-                        strhtml += ' <img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg">  &emsp;<span>' + item.Remark + '(' + item.UserName + ')</span>';
-                        strhtml += ' &emsp;<span>' + IsOnline + '</span>';
+                        var noLoginCls = item.IsOnline == 0 ? "noLogin" : "";
+                        strhtml += '<li class="listImg" id="' + item.FriendId + '" ondblclick="showPage(this,\'' + item.FriendId + '\',\'' + GetPhyPath(item.HeadPicture) + '\',\'' + item.Remark + '\',\'' + noLoginCls + '\')" >';
+                        strhtml += '<img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg ' + noLoginCls + '">  &emsp;<span>' + item.Remark + '</span>';
                         if (item.UnReadNum > 0) //
                         {
                             strhtml += '<i class="redCls">' + item.UnReadNum + '</i>';
@@ -135,7 +109,11 @@
             chat.client.onLineTips = function (res)//
             {
                 //LayerMsg(res.Msg);
-                $('#' + res.UserId).find('span:last').text("在线");
+                $('#' + res.UserId).find('.noLogin').removeClass('noLogin');
+                if (res.UserId == ComFriendId)//移除下线样式
+                {
+                    $('.topHdp').removeClass('noLogin');
+                }
             }
 
             //消息发送提示(给自己)--Server端呼叫client端sendFailTips方法
@@ -230,14 +208,28 @@
             }
         }
 
+        //切换选项卡
+        function ToggleTab(Type)
+        {
+            $('#xxim_tabs').find('.xxim_tabnow').removeClass('xxim_tabnow');
+            $('#xxim_tabs').find('span').eq(Type).addClass('xxim_tabnow');
+            switch (Type)
+            {
+                case 0: GetFriendsNewsList(); break;
+                case 1: Friend_GetFriendsList(); break;
+                case 2: break;
+            }
+        }
+
         var Page = 1;
         var ComFriendId = '';//当前聊天好友Id
         //打开聊天窗口
-        function showPage(obj, FriendId, HeadPicture, UserName, IsOnline)//
+        function showPage(obj, FriendId, HeadPicture, UserName, IsOnlineCls)//
         {
-            $('.topHdp').attr('src', HeadPicture)
+            $('.topHdp').attr('src', HeadPicture);
+            $('.topHdp').addClass(IsOnlineCls);
             $('.topName').text(UserName);
-            $('.IsOnline').text(IsOnline);
+
             $('.layout-P').addClass(FriendId);
             $('.layout-P').show();
 
@@ -251,6 +243,7 @@
         //关闭窗口
         function closeWin()//
         {
+            ComFriendId= '';
             $('.layout-P').removeClass(ComFriendId);
             $('.layout-P').hide();
         }
@@ -263,11 +256,12 @@
             })
         }
 
-        //获取和好友的聊天记录-分页
+        //获取和单个好友的聊天记录-分页
         function Friend_GetFriendsChatList_ForPage()//
         {
             $.post('/Friends/Friend_GetFriendsChatList_ForPage', { FriendId: ComFriendId, Page: Page, PageSize: 10 }, function (res) {
                 var strhtml = '';
+                console.log(res);
                 if (res.Code == 1)//
                 {
                     $.each(res.Data.Items.reverse(), function (index, item) {
@@ -276,7 +270,6 @@
                             strhtml += '<div class="Msg text-R marTB20">';
                             strhtml += '<div>';
                             strhtml += '<span class="col-gray">' + item.UpdateTime + '</span> ';
-                            //strhtml += '<i class="marLR">'++'</i>';
                             strhtml += '&emsp;<img src="' + GetPhyPath(item.SenderHeadPic) + '" alt="" class="smallImg">';
                             strhtml += '</div>';
                             strhtml += '<span>' + item.SendContent + '</span>';
@@ -285,24 +278,51 @@
                         {
                             strhtml += '<div class="Msg text-L marTB20">';
                             strhtml += '<div>';
-                            strhtml += '<img src="' + GetPhyPath(item.ReceiverHeadPic) + '" alt="" class="smallImg">';
-                            //strhtml += '<i class="marLR">' + item.ReceiverName + '</i>&emsp;';
+                            strhtml += '<img src="' + GetPhyPath(item.SenderHeadPic) + '" alt="" class="smallImg">';
                             strhtml += ' <span class="col-gray">' + item.UpdateTime + '</span>';
                             strhtml += '</div>';
                             strhtml += '<span>' + item.SendContent + '</span>';
                             strhtml += '</div>';
                         }
                     })
-                    if (Page == 1)//
+                    if (Page == 1)//第一页
                     {
-                        $('#ChatList').html(strhtml);
-                    } else //
+                        if (res.Data.TotalPages < 2)//小于两页数据
+                        {
+                            $('#LoadMore').removeAttr('onclick');
+                            $('#LoadMore').text('');                           
+                        } else //大于等于两页数据
+                        {                           
+                            $('#LoadMore').attr('onclick', 'LoadMore()');
+                            $('#LoadMore').text('加载更多');
+                        }
+                        $('#ChatList').not('#LoadMore').find('div').remove();
+                        $('#LoadMore').after(strhtml);
+                        $('#ChatList').scrollTop($('#ChatList')[0].scrollHeight);
+                    } else//
                     {
-                        $('#ChatList').prepend(strhtml);
+                        if (Page == res.Data.TotalPages)//
+                        {
+                            $('#LoadMore').removeAttr('onclick');
+                            $('#LoadMore').text('到顶了...');
+                        } else if (Page < res.Data.TotalPages)//
+                        {
+                            $('#LoadMore').attr('onclick', 'LoadMore()');
+                            $('#LoadMore').text('加载更多');
+                        }
+                        $('#LoadMore').after(strhtml);
                     }
-                    $('#ChatList').scrollTop($('#ChatList')[0].scrollHeight);
+                    
+                    
                 }
             })
+        }
+
+        //加载更多
+        function LoadMore()
+        {
+            Page += 1;
+            Friend_GetFriendsChatList_ForPage();
         }
 
         //发送消息
@@ -328,35 +348,49 @@
         function Friend_SeachUserInfoList()//
         {
             var SeachKey = $('#xxim_searchkey').val();
-            if (SeachKey == "")
-            {
-                Friend_GetFriendsList();
-                return;
-            }
             $.post('/Friends/Friend_SeachUserInfoList', { SeachKey: SeachKey }, function (res) {
                 var strhtml = '';
                 if (res.Code == 1)//
                 {
                     $.each(res.Data, function (index, item) {
-                        var IsOnline = item.IsOnline == 1 ? "在线" : "离线";
+                        var noLoginCls = item.IsOnline == 0 ? "noLogin" : "";
                         var strName = item.Remark == "" ? item.Account + '(' + item.No + ')' : item.Remark + '(' + item.Account + ')' + item.No;
                         item.Remark = item.Remark == "" ? item.Account : item.Remark;
                         strName = strName.replace(SeachKey, '<span class="SeachKeyCls">' + SeachKey + '</span>');
-                        strhtml += '<li class="listImg" id="' + item.Id + '" ondblclick="showPage(this,\'' + item.Id + '\',\'' + GetPhyPath(item.HeadPicture) + '\',\'' + item.Remark + '(' + item.Account + ')' + '\',\'' + IsOnline + '\')" >';
-                        strhtml += ' <img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg">  &emsp;<span>' + strName + '</span>';
-                        if (item.IsFriend == 1)//
-                        {
-                            strhtml += ' &emsp;<span>' + IsOnline + '</span>';
-                        } else//
+                        strhtml += '<li class="listImg" id="' + item.Id + '" ondblclick="showPage(this,\'' + item.Id + '\',\'' + GetPhyPath(item.HeadPicture) + '\',\'' + item.Remark + '(' + item.Account + ')' + '\',\'' + noLoginCls + '\')" >';
+                        strhtml += ' <img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg ' + noLoginCls + '">  &emsp;<span>' + strName + '</span>';
+                        if (item.IsFriend == 0)//
                         {
                             strhtml += ' &emsp;<input type="button" class="FriendsApply" onclick="Friend_AddFriendsApply(\'' + item.Id + '\')" value="添加好友" />';
-                        }
+                        } 
                         strhtml += '</li>';
                     })
                     if (res.Data.length == 0)//
                     {
                         strhtml = '<li class="listImg">搜索无结果...</li>';
                     }
+                    $('#xximmm').find('.xxim_list:eq(0)').html(strhtml);
+                }
+            })
+        }
+
+        //获取最近聊天记录
+        function GetFriendsNewsList()
+        {
+            $.post('/Friends/Friend_GetFriendsNewsList', function (res) {
+                var strhtml = '';
+                if (res.Code == 1)//
+                {
+                    $.each(res.Data, function (index, item) {
+                        var noLoginCls = item.IsOnline == 0 ? "noLogin" : "";
+                        strhtml += '<li class="listImg" id="' + item.FriendId + '" ondblclick="showPage(this,\'' + item.FriendId + '\',\'' + GetPhyPath(item.HeadPicture) + '\',\'' + item.Remark + '\',\'' + noLoginCls + '\')" >';
+                        strhtml += '<img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg ' + noLoginCls + '">  &emsp;<span>' + item.Remark + '</span>';
+                        if (item.UnReadNum > 0) //
+                        {
+                            strhtml += '<i class="redCls">' + item.UnReadNum + '</i>';
+                        }
+                        strhtml += '</li>';
+                    })
                     $('#xximmm').find('.xxim_list:eq(0)').html(strhtml);
                 }
             })
@@ -370,15 +404,15 @@
                 if (res.Code == 1)//
                 {
                     $.each(res.Data, function (index, item) {
-                        var IsOnline = item.IsOnline == 1 ? "在线" : "离线";
-                        strhtml += '<li class="listImg" id="' + item.FriendId + '" ondblclick="showPage(this,\'' + item.FriendId + '\',\'' + GetPhyPath(item.HeadPicture) + '\',\'' + item.Remark + '(' + item.UserName + ')' + '\',\'' + IsOnline + '\')" >';
-                        strhtml += ' <img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg">  &emsp;<span>' + item.Remark + '(' + item.UserName + ')</span>';
-                        strhtml += ' &emsp;<span>' + IsOnline + '</span>';
+                        var noLoginCls = item.IsOnline == 0 ? "noLogin" : "";
+                        var Name = item.Remark == "" ? item.Account : item.Remark + '(' + item.Account + ')';
+                        strhtml += '<li class="listImg" id="' + item.FriendId + '" ondblclick="showPage(this,\'' + item.FriendId + '\',\'' + GetPhyPath(item.HeadPicture) + '\',\'' + Name + '\',\'' + noLoginCls + '\')" >';
+                        strhtml += ' <img src="' + GetPhyPath(item.HeadPicture) + '" alt="" class="smallImg ' + noLoginCls + '">  &emsp;<span>' + Name + '</span>';
                         strhtml += '</li>';
                     })
                     $('#xximmm').find('.xxim_list:eq(0)').html(strhtml);
                 }
-            })
+            })           
         }
 
         //添加好友申请

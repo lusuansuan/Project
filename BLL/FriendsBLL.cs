@@ -27,7 +27,7 @@ namespace BLL
 
 
         /// <summary>
-        /// 获取和好友的聊天记录-分页
+        /// 获取和单个好友的聊天记录-分页
         /// </summary>
         /// <param name="UserId">当前用户Id</param>
         /// <param name="FriendId">好友用户Id</param>
@@ -113,6 +113,20 @@ namespace BLL
             DataSet ds = oFriendsDAL.Friend_GetUnReadFriendsApplyCount(UserId);
             return Common.JsonHelper.ToJson_L(ds);
         }
+
+
+        /// <summary>
+        /// 获取最近聊天记录-最新50条
+        /// </summary>
+        /// <param name="UserId">当前用户Id</param>
+        /// <returns></returns>
+        public object Friend_GetFriendsNewsList(Guid UserId)
+        {
+            DataSet ds = oFriendsDAL.Friend_GetFriendsNewsList(UserId);
+            return Common.JsonHelper.ToJson_L(ds,0,0,false);
+        }
+
+
 
 
     }

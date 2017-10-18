@@ -58,7 +58,7 @@ namespace SignalRMVC.SignalR
                 Common.CacheHelper<List<SessionUserInfo>>.Insert("OnLineUsers", OnLineUsers);
 
                 //获取好友列表
-                var obj = oFriendsBLL.Friend_GetFriendsList(GetSignalrUserInfo().Id);
+                var obj = oFriendsBLL.Friend_GetFriendsNewsList(GetSignalrUserInfo().Id);
                 ReturnModel<List<ChatUserInfo>> models = JsonConvert.DeserializeObject<ReturnModel<List<ChatUserInfo>>>(obj.ToString());
                 var result = new { UserId = GetSignalrUserInfo().Id, Msg = "您的好友 " + GetSignalrUserInfo().UserName + " 上线了" };
                 foreach (ChatUserInfo model in models.Data)
@@ -72,7 +72,7 @@ namespace SignalRMVC.SignalR
                     }                  
                 }
                 //发送好友列表数据信息给自己
-                Clients.Caller.getFriendsList(models);
+                Clients.Caller.getFriendsNewsList(models);
                 ////提示好友自己上线
                 //Clients.Group(GetSignalrUserInfo().Account + "的在线好友").onLineTips("您的好友 " + GetSignalrUserInfo().UserName + " 上线了");               
             }
