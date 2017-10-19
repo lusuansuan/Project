@@ -42,6 +42,10 @@
     <Compile Include="Friends.cs" />
     <Compile Include="Friends_Apply.cs" />
     <Compile Include="Friends_Chat.cs" />
+    <Compile Include="Friends_Group.cs" />
+    <Compile Include="Friends_GroupChat.cs" />
+    <Compile Include="Friends_GroupMember.cs" />
+    <Compile Include="Friends_GroupNews.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnModel.cs" />
     <Compile Include="UserInfo.cs" />
