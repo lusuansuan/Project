@@ -20,11 +20,14 @@ namespace SignalRMVC.SignalR
         //在线用户集合
         public static List<SessionUserInfo> OnLineUsers = new List<SessionUserInfo>();
 
-        //群组
-        public static List<Rooms> Rooms = new List<Rooms>(); 
-
+        //群在线人员集合
+        public static List<Friends_ChatGroup> GroupOnLineUsers = new List<Friends_ChatGroup>();
+       
+        //业务逻辑层
         SessionUserInfo UserInfo = new SessionUserInfo();
         FriendsBLL oFriendsBLL = new FriendsBLL();
+        GroupsBLL oGroupsBLL = new GroupsBLL();
+
 
         /// <summary>
         /// 获取连接ID,你可以写成自己的扩展方法,或设置成属性,自行定义
@@ -49,32 +52,63 @@ namespace SignalRMVC.SignalR
         /// </summary>
         public void connect()
         {
+            UserInfo = GetSignalrUserInfo();
+            //获取所有的群
+            var GroupsObj = oGroupsBLL.Group_GetAllGroupsList();
+            ReturnModel<List<Friends_ChatGroup>> Groups = JsonConvert.DeserializeObject<ReturnModel<List<Friends_ChatGroup>>>(GroupsObj.ToString());
+            //遍历群判断是否存在在线群里
+            foreach (Friends_ChatGroup Group in Groups.Data)
+            {
+                if(GroupOnLineUsers.Count(x => x.GroupId == Group.GroupId) == 0)
+                {
+                    GroupOnLineUsers.Add(Group);
+                }
+            }
+
+            var MyGroupObj = oGroupsBLL.Group_GetGroupsList(UserInfo.Id);
+            ReturnModel<List<Friends_GroupList>> MyGroups = JsonConvert.DeserializeObject<ReturnModel<List<Friends_GroupList>>>(MyGroupObj.ToString());
+
+            //把我加入到存在我的在线群成员里
+            foreach (Friends_GroupList MyGroup in MyGroups.Data)
+            {
+                if (GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos != null)
+                {
+                    if (GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos.Count(x => x.UserId == UserInfo.Id) == 0)
+                    {
+                        GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos.Add(new GroupOnLineUserInfo() { UserId = UserInfo.Id });
+                    }
+                }
+                else
+                {
+                    List<GroupOnLineUserInfo> GroupOnLineUserInfos = new List<GroupOnLineUserInfo>();
+                    GroupOnLineUserInfos.Add(new GroupOnLineUserInfo { UserId = UserInfo.Id });
+                    GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos = GroupOnLineUserInfos;
+                }
+            }
+
             //如果不存在
-            if (OnLineUsers.Count(x => x.Id == GetSignalrUserInfo().Id) == 0)
+            if (OnLineUsers.Count(x => x.Id == UserInfo.Id) == 0)
             {
                 //添加在线人员
-                OnLineUsers.Add(GetSignalrUserInfo());
+                OnLineUsers.Add(UserInfo);
                 //把在线人员添加到缓存
                 Common.CacheHelper<List<SessionUserInfo>>.Insert("OnLineUsers", OnLineUsers);
 
                 //获取好友列表
-                var obj = oFriendsBLL.Friend_GetFriendsNewsList(GetSignalrUserInfo().Id);
+                var obj = oFriendsBLL.Friend_GetFriendsNewsList(UserInfo.Id);
                 ReturnModel<List<ChatUserInfo>> models = JsonConvert.DeserializeObject<ReturnModel<List<ChatUserInfo>>>(obj.ToString());
-                var result = new { UserId = GetSignalrUserInfo().Id, Msg = "您的好友 " + GetSignalrUserInfo().UserName + " 上线了" };
+                var result = new { UserId = UserInfo.Id, Msg = "您的好友 " + UserInfo.UserName + " 上线了" };
                 foreach (ChatUserInfo model in models.Data)
                 {
                     //标记上线的好友并加入我的在线好友集合
                     if (OnLineUsers.Count(x => x.Id == model.FriendId) > 0)
                     {
                         model.IsOnline = 1;
-                        Clients.User(model.FriendId.ToString()).onLineTips(result);
-                        //Groups.Add(model.FriendId.ToString(), GetSignalrUserInfo().Account+"的在线好友");                        
+                        Clients.User(model.FriendId.ToString()).onLineTips(result);                      
                     }                  
                 }
                 //发送好友列表数据信息给自己
-                Clients.Caller.getFriendsNewsList(models);
-                ////提示好友自己上线
-                //Clients.Group(GetSignalrUserInfo().Account + "的在线好友").onLineTips("您的好友 " + GetSignalrUserInfo().UserName + " 上线了");               
+                Clients.Caller.getFriendsNewsList(models);            
             }
         }
 
@@ -103,6 +137,38 @@ namespace SignalRMVC.SignalR
                 Clients.Caller.sendMsgTips(obj);
             }
         }
+
+
+        /// <summary>
+        /// 发送群消息
+        /// </summary>
+        /// <param name="ToId">接收人ID</param>
+        /// <param name="message">信息</param>
+        public void sendGroupMessage(string strmodel)
+        {
+            UserInfo = GetSignalrUserInfo();
+            Friends_GroupChat model = JsonConvert.DeserializeObject<Friends_GroupChat>(strmodel);
+            model.Id = Guid.NewGuid();
+            model.SenderId = UserInfo.Id;
+            ReturnModel remodel = JsonConvert.DeserializeObject<ReturnModel>(oGroupsBLL.Friend_AddGroupsChat(model).ToString());
+            if (remodel.Code == 1)
+            {
+                var obj = new { Code = 1, Msg = "发送成功", GroupId = model.GroupId, SenderId = model.SenderId, SendType = model.SendType, SendContent = model.SendContent, SenderHeadPic = UserInfo.HeadPicture, SenderName = UserInfo.UserName, UpdateTime = DateTime.Now.ToLongTimeString() };
+                Clients.Group(model.GroupId.ToString()).sendGroupMessage(obj);
+            }
+            else
+            {
+                var obj = new { Code = 0, Msg = "发送失败" };
+                Clients.Caller.sendMsgTips(obj);
+            }
+        }
+
+
+
+
+
+
+
 
         /// <summary>
         /// 添加好友申请
@@ -137,105 +203,6 @@ namespace SignalRMVC.SignalR
             }
             return base.OnDisconnected(stopCalled);
         }
-
-
-
-        //#region 模板一
-
-        ////声明静态变量存储当前在线用户
-        //public static class UserHandler
-        //{
-        //    public static Dictionary<string, string> ConnectedIds = new Dictionary<string, string>();
-
-        //}
-
-        //SessionModel UserInfo = new SessionModel();
-
-        ///// <summary>
-        ///// 获取连接ID,你可以写成自己的扩展方法,或设置成属性,自行定义
-        ///// </summary>
-        ///// <returns></returns>
-        //public SessionModel GetSignalrUserInfo()
-        //{
-        //    if (Context.Request.GetHttpContext().Request.Cookies["UserInfo"] != null)
-        //    {
-        //        return JsonConvert.DeserializeObject<SessionModel>(Context.Request.GetHttpContext().Request.Cookies["UserInfo"].Value);
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //        //获取不到当前用户信息/最好跳回登陆页
-        //    }
-        //}
-
-
-        ////用户进入页面时执行的（连接操作）
-        //public void userConnected()
-        //{
-        //    UserInfo = GetSignalrUserInfo();
-        //    //获取当前用户ID
-        //    string UserID = UserInfo.UserID.ToString();
-        //    //获取当前用户名字
-        //    string Name = UserInfo.Account;
-        //    //新增目前使用者上线清单
-        //    UserHandler.ConnectedIds.Add(UserID, Name);
-        //    //发送信息给自己，并显示上线清单
-        //    Clients.Caller.getList(UserHandler.ConnectedIds.Select(p => new { id = p.Key, name = p.Value }).ToList());
-        //    //发送信息给其他人提示自己上线了
-        //    Clients.Others.addList(UserID, Name);
-        //}
-
-
-
-        ///// <summary>
-        ///// 发送信息给所有人
-        ///// </summary>
-        ///// <param name="message">信息</param>
-        //public void sendAllMessage(string message)
-        //{
-        //    UserInfo = GetSignalrUserInfo();
-        //    //进行编码，防止XSS攻击
-        //    message = HttpUtility.HtmlEncode(message);
-        //    //获取当前用户ID
-        //    string UserID = UserInfo.UserID.ToString();
-        //    //查找UserID 在在线用户集合里对应的名字 //也可以用获取当前用户名字来获取
-        //    var name = UserHandler.ConnectedIds.Where(p => p.Key == UserID).FirstOrDefault().Value;
-        //    message = name + "：" + message;
-        //    //调用客户端方法
-        //    Clients.All.sendAllMessge(message);
-        //}
-
-
-        ///// <summary>
-        ///// 发送信息给特定人
-        ///// </summary>
-        ///// <param name="ToId">接收人ID</param>
-        ///// <param name="message">信息</param>
-        //public void sendMessage(string ToId, string message)
-        //{
-        //    UserInfo = GetSignalrUserInfo();
-        //    message = HttpUtility.HtmlEncode(message);
-        //    string UserID = UserInfo.UserID.ToString();
-        //    string fromName = UserInfo.Account;
-        //    message = fromName + " ：" + message;
-        //    Clients.User(ToId).sendMessage(message);
-        //}
-
-
-        ////当使用者断线时执行
-        //public override Task OnDisconnected(bool bol)
-        //{
-        //    UserInfo = GetSignalrUserInfo();
-        //    //当使用者离开时，移除在清单内的ConnectionId
-        //    Clients.All.removeList(UserInfo.UserID.ToString());
-        //    UserHandler.ConnectedIds.Remove(UserInfo.UserID.ToString());
-        //    return base.OnDisconnected(bol);
-        //} 
-        //#endregion
-
-
-
-
 
     }
 

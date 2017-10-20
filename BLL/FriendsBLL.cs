@@ -37,7 +37,7 @@ namespace BLL
         public object Friend_GetFriendsChatList_ForPage(Guid UserId, Guid FriendId, int Page, int PageSize)
         {
             DataSet ds = oFriendsDAL.Friend_GetFriendsChatList_ForPage(UserId, FriendId, Page, PageSize);
-            return Common.JsonHelper.ToJson_L(ds, 1, 10, true);
+            return Common.JsonHelper.ToJson_L(ds, Page, PageSize, true);
         }
 
 

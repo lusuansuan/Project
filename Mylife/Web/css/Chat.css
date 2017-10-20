@@ -186,6 +186,10 @@ li{list-style:none;}
 	height: 50px;
 	width: 50px;
 }
+.minImg{
+    height: 24px;
+	width: 24px;
+}
 .titleCls .bigImg{
 	position: absolute;
 	left: 10px;
@@ -324,13 +328,14 @@ color:blue;
 .redCls {
     background: #ff0000 !important;
     color: #fff;
-    height: 14px;
-    width: 14px;
+    height: 16px;
+    width: 16px;
     border-radius: 50%;
     display: inline-block;
     text-align: center;
     right: 20px;
-    top: 14px;
+    top: 28px;
+    line-height:16px;
 }
 .marTB20 {
     margin: 20px 0;
@@ -345,4 +350,42 @@ color:blue;
     filter: grayscale(100%);
 	
     filter: gray
+}
+
+
+.GroupMemberImg{
+    position:relative;
+    padding:5px 0;
+} 
+.posiCls{
+    position:absolute;
+    top:0;
+    right:-29%;
+    margin-top:-1px;
+    display:inline-block;
+    height:550px;
+    border:1px solid #ccc;
+    border-left:0;
+}
+.posiCls>.xxim_list{
+    padding: 10px;
+    display: block;
+    overflow-y: scroll;
+    height:100%;
+    margin:0;
+}
+.posiCls>.xxim_list>.GroupMemberImg:last-child{
+    margin-bottom:10px;
+}
+.GroupMemberImg span,.GroupMemberImg img{
+    vertical-align:middle;
+}
+.col777{
+    color:#777;
+}
+.font18{
+    font-size:18px;
+}
+.verMiddle{
+    vertical-align:middle !important;
 }

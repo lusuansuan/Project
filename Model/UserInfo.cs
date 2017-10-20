@@ -144,7 +144,7 @@ namespace Model
     {
 
         /// <summary>
-        /// 聊天表主键Id
+        /// 主键Id
         /// </summary>
         public Guid Id { get; set; }
 
@@ -200,27 +200,6 @@ namespace Model
 
     }
 
-    /// <summary>
-    /// 聊天组
-    /// </summary>
-    public class Rooms
-    {
-        /// <summary>
-        /// 群Id
-        /// </summary>
-        public Guid RoomId { get; set; }
-
-        /// <summary>
-        /// 房间名
-        /// </summary>
-        public string RoomName { get; set; }
-
-        /// <summary>
-        /// 群组用户集合
-        /// </summary>
-        public List<ChatUserInfo> Users { get; set; }
-    }
-
 
     /// <summary>
     /// 查询用户信息实体
@@ -269,4 +248,55 @@ namespace Model
         public int IsOnline { get; set; }
 
     }
+
+
+    /// <summary>
+    /// 在线群用户信息实体
+    /// </summary>
+    public class GroupOnLineUserInfo
+    {
+        /// <summary>
+        /// 用户Id
+        /// </summary>
+        public Guid UserId { get; set; }
+
+    }
+
+    /// <summary>
+    /// 群用户列表实体
+    /// </summary>
+    public class GroupUserInfoList
+    {
+        /// <summary>
+        /// 好友表主键Id
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// 好友用户Id
+        /// </summary>
+        public Guid FriendId { get; set; }
+
+        /// <summary>
+        /// 好友用户名
+        /// </summary>
+        public string Account { get; set; }
+
+        /// <summary>
+        /// 好友头像
+        /// </summary>
+        public string HeadPicture { get; set; }
+
+        /// <summary>
+        /// 好友备注
+        /// </summary>
+        public string Remark { get; set; }
+
+        /// <summary>
+        /// 是否在线：0都，1是
+        /// </summary>
+        public int IsOnline { get; set; }
+
+    }
+
 }

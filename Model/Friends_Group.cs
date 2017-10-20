@@ -99,4 +99,62 @@ namespace Model
         #endregion Model
 
     }
+
+
+    /// <summary>
+    /// 群列表
+    /// </summary>
+    public class Friends_GroupList
+    {
+        /// <summary>
+        /// 群Id
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// 群名称
+        /// </summary>
+        public string GroupName { get; set; }
+
+        /// <summary>
+        /// 群创建者Id
+        /// </summary>
+        public Guid OwnerId { get; set; }
+
+        /// <summary>
+        /// 未读消息数
+        /// </summary>
+        public int UnReadNum { get; set; }
+
+        /// <summary>
+        /// 是否是自己的群：0否，1是
+        /// </summary>
+        public int IsOwner { get; set; }
+    }
+
+
+    /// <summary>
+    /// 在线聊天群及成员
+    /// </summary>
+    public class Friends_ChatGroup
+    {
+        /// <summary>
+        /// 群Id
+        /// </summary>
+        public Guid GroupId { get; set; }
+
+        /// <summary>
+        /// 群名称
+        /// </summary>
+        public string GroupName { get; set; }
+
+        /// <summary>
+        /// 群用户
+        /// </summary>
+        public List<GroupOnLineUserInfo> GroupOnLineUserInfos { get; set; }
+
+
+    }
+
+
 }
