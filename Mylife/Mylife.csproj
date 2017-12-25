@@ -140,6 +140,7 @@
     <Content Include="Web\js\layer\skin\layer.ext.css" />
     <Content Include="Web\js\Public.js" />
     <None Include="Properties\PublishProfiles\Mylife.pubxml" />
+    <Content Include="Views\QQLogin\QQLogin.cshtml" />
     <None Include="Web\js\jquery-1.10.2.intellisense.js" />
     <Content Include="Web\js\jquery-1.10.2.js" />
     <Content Include="Web\js\jquery-1.10.2.min.js" />
@@ -155,6 +156,7 @@
     <Compile Include="Controllers\FriendsController.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\QQLoginController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

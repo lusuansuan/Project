@@ -37,6 +37,17 @@ namespace BLL
             return Common.JsonHelper.ToJson_L(ds);
         }
 
+        /// <summary>
+        /// 通过QQOpenId获取用户信息
+        /// </summary>
+        /// <param name="OpenId"></param>
+        /// <returns></returns>
+        public object GetUserInfoByOpenId(string OpenId)
+        {
+            DataSet ds = oHomeDAL.GetUserInfoByOpenId(OpenId);
+            return Common.JsonHelper.ToJson_L(ds);
+        }
+
 
 
     }

@@ -8,6 +8,9 @@ using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using Model;
 using Common;
+using System.Text;
+using System.Net;
+using System.IO;
 
 namespace Mylife.Controllers
 {
@@ -19,9 +22,9 @@ namespace Mylife.Controllers
             return View();
         }
 
-
         JavaScriptSerializer js = new JavaScriptSerializer();
         HomeBLL oHomeBLL = new HomeBLL();
+        
 
         /// <summary>
         /// 登录验证
@@ -83,7 +86,7 @@ namespace Mylife.Controllers
             return Json(new {Code=1,Msg="退出成功"});
         }
 
-
-
 	}
+
+
 }

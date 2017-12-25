@@ -53,38 +53,38 @@ namespace SignalRMVC.SignalR
         public void connect()
         {
             UserInfo = GetSignalrUserInfo();
-            //获取所有的群
-            var GroupsObj = oGroupsBLL.Group_GetAllGroupsList();
-            ReturnModel<List<Friends_ChatGroup>> Groups = JsonConvert.DeserializeObject<ReturnModel<List<Friends_ChatGroup>>>(GroupsObj.ToString());
-            //遍历群判断是否存在在线群里
-            foreach (Friends_ChatGroup Group in Groups.Data)
-            {
-                if(GroupOnLineUsers.Count(x => x.GroupId == Group.GroupId) == 0)
-                {
-                    GroupOnLineUsers.Add(Group);
-                }
-            }
+            ////获取所有的群
+            //var GroupsObj = oGroupsBLL.Group_GetAllGroupsList();
+            //ReturnModel<List<Friends_ChatGroup>> Groups = JsonConvert.DeserializeObject<ReturnModel<List<Friends_ChatGroup>>>(GroupsObj.ToString());
+            ////遍历群判断是否存在在线群里
+            //foreach (Friends_ChatGroup Group in Groups.Data)
+            //{
+            //    if(GroupOnLineUsers.Count(x => x.GroupId == Group.GroupId) == 0)
+            //    {
+            //        GroupOnLineUsers.Add(Group);
+            //    }
+            //}
 
-            var MyGroupObj = oGroupsBLL.Group_GetGroupsList(UserInfo.Id);
-            ReturnModel<List<Friends_GroupList>> MyGroups = JsonConvert.DeserializeObject<ReturnModel<List<Friends_GroupList>>>(MyGroupObj.ToString());
+            //var MyGroupObj = oGroupsBLL.Group_GetGroupsList(UserInfo.Id);
+            //ReturnModel<List<Friends_GroupList>> MyGroups = JsonConvert.DeserializeObject<ReturnModel<List<Friends_GroupList>>>(MyGroupObj.ToString());
 
-            //把我加入到存在我的在线群成员里
-            foreach (Friends_GroupList MyGroup in MyGroups.Data)
-            {
-                if (GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos != null)
-                {
-                    if (GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos.Count(x => x.UserId == UserInfo.Id) == 0)
-                    {
-                        GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos.Add(new GroupOnLineUserInfo() { UserId = UserInfo.Id });
-                    }
-                }
-                else
-                {
-                    List<GroupOnLineUserInfo> GroupOnLineUserInfos = new List<GroupOnLineUserInfo>();
-                    GroupOnLineUserInfos.Add(new GroupOnLineUserInfo { UserId = UserInfo.Id });
-                    GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos = GroupOnLineUserInfos;
-                }
-            }
+            ////把我加入到存在我的在线群成员里
+            //foreach (Friends_GroupList MyGroup in MyGroups.Data)
+            //{
+            //    if (GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos != null)
+            //    {
+            //        if (GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos.Count(x => x.UserId == UserInfo.Id) == 0)
+            //        {
+            //            GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos.Add(new GroupOnLineUserInfo() { UserId = UserInfo.Id });
+            //        }
+            //    }
+            //    else
+            //    {
+            //        List<GroupOnLineUserInfo> GroupOnLineUserInfos = new List<GroupOnLineUserInfo>();
+            //        GroupOnLineUserInfos.Add(new GroupOnLineUserInfo { UserId = UserInfo.Id });
+            //        GroupOnLineUsers.First(p => p.GroupId == MyGroup.Id).GroupOnLineUserInfos = GroupOnLineUserInfos;
+            //    }
+            //}
 
             //如果不存在
             if (OnLineUsers.Count(x => x.Id == UserInfo.Id) == 0)

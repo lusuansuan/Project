@@ -48,6 +48,7 @@ namespace DAL
                 LstParam.Add(Common.OADBHelperSQL.CreateParameter("@UserName", SqlDbType.VarChar, 50, model.UserName));
                 LstParam.Add(Common.OADBHelperSQL.CreateParameter("@pswd", SqlDbType.VarChar, 50, model.Pasword));
                 LstParam.Add(Common.OADBHelperSQL.CreateParameter("@HeadPicture", SqlDbType.VarChar, 500, model.HeadPicture));
+                LstParam.Add(Common.OADBHelperSQL.CreateParameter("@OpenId", SqlDbType.VarChar, 50, model.OpenId ?? ""));
                 return Common.OADBHelperSQL.RunProcedure("pSys_Register", LstParam.ToArray(), "Data");
             }
             catch (Exception ex)
@@ -56,6 +57,26 @@ namespace DAL
             }
 
         }
+
+        /// <summary>
+        /// 通过QQOpenId获取用户信息
+        /// </summary>
+        /// <param name="OpenId"></param>
+        /// <returns></returns>
+        public DataSet GetUserInfoByOpenId(string OpenId)
+        {
+            try
+            {
+                List<IDataParameter> LstParam = new List<IDataParameter>();
+                LstParam.Add(Common.OADBHelperSQL.CreateParameter("@OpenId", SqlDbType.VarChar, OpenId));
+                return Common.OADBHelperSQL.RunProcedure("pSys_GetUserInfoByOpenId", LstParam.ToArray(), "Data");
+            }
+            catch (Exception ex)
+            {
+                return Common.OADBHelperSQL.CustomDataSet(false);
+            }
+        }
+
 
 
     }

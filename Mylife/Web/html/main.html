@@ -103,13 +103,12 @@
 
         //Signalr绑定事件
         $(function () {
-
             //建立與Server端的Hub的物件，注意Hub的開頭字母一定要為小寫
             chat = $.connection.ConHub;
 
             //當連線完成後，呼叫Server端的connect方法
             $.connection.hub.start().done(function ()
-            {             
+            {
                 chat.server.connect();
             });
 

@@ -90,7 +90,6 @@ namespace Common
                 }
                 catch (Exception ex)
                 {
-                    string stringError = ex.ToString();
                     StringBuilder sb = new StringBuilder();
                     sb.Append("call ").Append(storedProcName).Append("(");
                     if (parameters != null)
@@ -142,7 +141,6 @@ namespace Common
                 }
                 catch (Exception ex)
                 {
-                    string stringError = ex.ToString();
                     StringBuilder sb = new StringBuilder();
                     sb.Append("call ").Append(storedProcName).Append("(");
                     if (parameters != null)
@@ -173,12 +171,13 @@ namespace Common
 
         #endregion
 
+        #region 执行sql语句
         /// <summary>
-        /// 获取一个表
+        /// 获取一个datatable
         /// </summary>
-        /// <param name="stringData">SQL语句</param>
+        /// <param name="strsql">SQL语句</param>
         /// <returns></returns>
-        public static DataTable GetDataTable(string stringData)
+        public static DataTable GetDataTable(string strsql)
         {
 
             SqlConnection con = new SqlConnection(connectionString);
@@ -187,7 +186,7 @@ namespace Common
             {
 
                 con.Open();
-                SqlCommand com = new SqlCommand(stringData, con);
+                SqlCommand com = new SqlCommand(strsql, con);
 
                 SqlDataAdapter da = new SqlDataAdapter(com);
 
@@ -197,7 +196,7 @@ namespace Common
             catch (Exception ex)
             {
                 string stringError = ex.ToString();
-                WriteLogHelper wl = new WriteLogHelper(ex, stringData);
+                WriteLogHelper wl = new WriteLogHelper(ex, strsql);
                 wl.StartWriteLog();
                 return null;
             }
@@ -205,13 +204,14 @@ namespace Common
             {
                 con.Close();
             }
-        }
+        } 
+        
         /// <summary>
-        /// 获取一个结果集合
+        /// 获取一个dataset
         /// </summary>
-        /// <param name="stringData">SQL语句</param>
+        /// <param name="strsql">SQL语句</param>
         /// <returns></returns>
-        public static DataSet GetDataSet(string stringData)
+        public static DataSet GetDataSet(string strsql)
         {
 
             SqlConnection con = new SqlConnection(connectionString);
@@ -220,7 +220,7 @@ namespace Common
             {
 
                 con.Open();
-                SqlCommand com = new SqlCommand(stringData, con);
+                SqlCommand com = new SqlCommand(strsql, con);
 
                 SqlDataAdapter da = new SqlDataAdapter(com);
 
@@ -230,7 +230,7 @@ namespace Common
             catch (Exception ex)
             {
                 string stringError = ex.ToString();
-                WriteLogHelper wl = new WriteLogHelper(ex, stringData);
+                WriteLogHelper wl = new WriteLogHelper(ex, strsql);
                 wl.StartWriteLog();
                 return null;
             }
@@ -241,11 +241,11 @@ namespace Common
         }
 
         /// <summary>
-        /// 更新或者删除
+        /// 添加/更新/删除
         /// </summary>
-        /// <param name="stringData">SQL语句</param>
-        /// <returns></returns>
-        public static int UpdateDelele(string stringData)
+        /// <param name="strsql">SQL语句</param>
+        /// <returns>返回影响行数</returns>
+        public static int UpdateDelele(string strsql)
         {
             int i = 0;
             SqlConnection con = new SqlConnection(connectionString);
@@ -254,7 +254,7 @@ namespace Common
             {
 
                 con.Open();
-                SqlCommand com = new SqlCommand(stringData, con);
+                SqlCommand com = new SqlCommand(strsql, con);
 
                 SqlDataAdapter da = new SqlDataAdapter(com);
 
@@ -266,7 +266,7 @@ namespace Common
             {
                 string stringError = ex.ToString();
                 i = 0;
-                WriteLogHelper wl = new WriteLogHelper(ex, stringData);
+                WriteLogHelper wl = new WriteLogHelper(ex, strsql);
                 wl.StartWriteLog();
             }
             finally
@@ -276,17 +276,18 @@ namespace Common
             return i;
         }
         /// <summary>
-        /// 执行SQL语句
+        /// 添加/更新/删除
         /// </summary>
-        /// <param name="sql"></param>
-        public static bool ExcuteSQL(string sql)
+        /// <param name="sql">SQL语句</param>
+        /// <returns>返回bool值</returns>
+        public static bool ExcuteSQL(string strsql)
         {
             SqlConnection con = new SqlConnection(connectionString);
             DataSet ds = new DataSet();
             try
             {
                 con.Open();
-                SqlCommand com = new SqlCommand(sql, con);
+                SqlCommand com = new SqlCommand(strsql, con);
                 com.ExecuteNonQuery();
                 return true;
 
@@ -294,7 +295,7 @@ namespace Common
             catch (Exception ex)
             {
                 string stringError = ex.ToString();
-                WriteLogHelper wl = new WriteLogHelper(ex, sql);
+                WriteLogHelper wl = new WriteLogHelper(ex, strsql);
                 wl.StartWriteLog();
                 return false;
 
@@ -305,36 +306,8 @@ namespace Common
             }
         }
 
-
-        /// <summary>
-        /// 分页table 
-        /// </summary>
-        /// <param name="sql"></param>
-        /// <param name="startRecord"></param>
-        /// <param name="recordNum"></param>
-        /// <param name="srcTable"></param>
-        /// <returns></returns>
-        public static DataTable GetDataTable(String sql, Int32 currentPage, Int32 recordNum, String srcTable)
-        {
-            SqlConnection con = new SqlConnection(connectionString);
-            DataSet ds = new DataSet();
-            try
-            {
-                SqlDataAdapter da = new SqlDataAdapter(sql, con);
-                da.Fill(ds, (currentPage - 1) * recordNum, recordNum, srcTable);
-                return ds.Tables[0];
-            }
-            catch (Exception ex)
-            {
-                WriteLogHelper wl = new WriteLogHelper(ex, sql);
-                wl.StartWriteLog();
-                throw ex;
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
+        #endregion
+    
         #region 执行多条SQL语句，实现数据库事务。
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
@@ -383,6 +356,7 @@ namespace Common
         }
 
         #endregion
+
         #region  执行SQL语句，返回影响的记录数
 
         /// <summary>
@@ -426,6 +400,7 @@ namespace Common
 
         #endregion
 
+        #region 执行SQL语句，返回影响的记录数  
         /// <summary>  
         /// 执行SQL语句，返回影响的记录数  
         /// </summary>  
@@ -494,78 +469,9 @@ namespace Common
                     cmd.Parameters.Add(parameter);
                 }
             }
-        }
-
-        /// <summary>
-        /// 分页查询
-        /// 2015-03-16 邱容超
-        /// </summary>
-        /// <param name="TableName">要查询的目标表</param>
-        /// <param name="FieldList">要查询的字段</param>
-        /// <param name="PrimaryKey">主键，分页排序依据，必须</param>
-        /// <param name="Where">分页查询条件</param>
-        /// <param name="Order">分页排序</param>
-        /// <param name="PageSize">一页多少行</param>
-        /// <param name="PageIndex">当前第几页，首页是1.</param>
-        /// <param name="RecordCount">一共多少记录，总记录数。</param>
-        /// <param name="PageCount">一共分多少页，总页数。</param>
-        /// <returns></returns>
-        public static DataSet Paging(string TableName, string FieldList, string PrimaryKey, string Where, string Order, int PageSize, int PageIndex, out int RecordCount, out int PageCount)
-        {
-            RecordCount = 0;
-            PageCount = 0;
-            
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    IDataParameter[] parameters = new IDataParameter[9];
-                    parameters[0] = new SqlParameter("@TableName", SqlDbType.NVarChar, 1000);
-                    parameters[0].Value = TableName;
-                    parameters[1] = new SqlParameter("@FieldList", SqlDbType.NVarChar, 1000);
-                    parameters[1].Value = FieldList;
-                    parameters[2] = new SqlParameter("@PrimaryKey", SqlDbType.NVarChar, 100);
-                    parameters[2].Value = PrimaryKey;
-                    parameters[3] = new SqlParameter("@Where", SqlDbType.NVarChar, 6000);
-                    parameters[3].Value = Where;
-                    parameters[4] = new SqlParameter("@Order", SqlDbType.NVarChar, 100);
-                    parameters[4].Value = Order;
-                    parameters[5] = new SqlParameter("@PageSize", SqlDbType.Int);
-                    parameters[5].Value = PageSize;
-                    parameters[6] = new SqlParameter("@PageIndex", SqlDbType.Int);
-                    parameters[6].Value = PageIndex;
-                    parameters[7] = new SqlParameter("@RecordCount", SqlDbType.Int);
-                    parameters[7].Value = RecordCount;
-                    parameters[7].Direction = ParameterDirection.Output;
-                    parameters[8] = new SqlParameter("@PageCount", SqlDbType.Int);
-                    parameters[8].Value = PageCount;
-                    parameters[8].Direction = ParameterDirection.Output;
-                    DataSet dataSet = new DataSet();
-                    connection.Open();
-                    SqlDataAdapter sqlDA = new SqlDataAdapter();
-                    SqlCommand comm = BuildQueryCommand(connection, "SP_GetResult_Page", parameters);
-                    sqlDA.SelectCommand = comm;
-
-                    sqlDA.Fill(dataSet, TableName);
-                    RecordCount = (int)comm.Parameters["@RecordCount"].Value;
-                    PageCount = (int)comm.Parameters["@PageCount"].Value;
-                    connection.Close();
-                    return dataSet;
-                }
-                catch (Exception ex)
-                {
-                    string stringError = ex.ToString();
-                    WriteLogHelper wl = new WriteLogHelper(ex, TableName);
-                    wl.StartWriteLog();
-                    return null;
-
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-        }
+        } 
+        #endregion
+      
         #region 存储过程事务处理 阿彩 2015-10-23
         /// <summary>
         /// 存储过程事务处理 阿彩 2015-10-23
@@ -638,7 +544,6 @@ namespace Common
         }
         #endregion
 
-
         #region  datatable 转 json  东明 2016-07-23
 
         public static string Serialize(DataTable dt, bool flag)
@@ -668,7 +573,6 @@ namespace Common
 
         }  
         #endregion
-
 
         #region 创建参数 by Ruby 20170303 13:40
         /// <summary>
@@ -749,6 +653,7 @@ namespace Common
 
         #endregion
 
+        #region 自定义生成一个dataset-用于数据访问层出错时返回
         /// <summary>
         /// 自定义生成一个dataset-用于数据访问层出错时返回
         /// </summary>
@@ -776,11 +681,10 @@ namespace Common
             dt.Rows.Add(dr);
             ds.Tables.Add(dt);
             return ds;
-        }
+        } 
+        #endregion
 
        
-
-
     }
 
     #region  datatable 转 list<T>  东明 2016-07-23

@@ -43,6 +43,10 @@ function RemoveWhiteSpace(data)//
 
 //获取物理地址
 function GetPhyPath(src)//
-{
-    return 'http://127.0.0.1:9000' + src;
+{   
+    if (src.indexOf('http://') == -1)
+    {
+        return 'http://127.0.0.1:9000' + src;
+    }
+    return src;
 }

@@ -21,6 +21,7 @@ namespace Model
         private string _pasword;
         private string _headpicture;
         private string _sex;
+        private string _openid;
         private string _state;
         private DateTime? _createtime;
         private Guid _createid;
@@ -74,6 +75,14 @@ namespace Model
         {
             set { _sex = value; }
             get { return _sex; }
+        }
+        /// <summary>
+        /// QQ或微信OperId
+        /// </summary>
+        public string OpenId
+        {
+            set { _openid = value; }
+            get { return _openid; }
         }
         /// <summary>
         /// 用户状态:0正常，1被冻结

@@ -33,18 +33,25 @@ namespace Mylife.Controllers
         /// <param name="SeachKey">查询关键词</param>
         public JsonResult Friend_SeachUserInfoList(string SeachKey)
         {
-            var obj = oFriendsBLL.Friend_SeachUserInfoList(GetUserInfo().Id, SeachKey);
-            List<SessionUserInfo> models = Common.CacheHelper<List<SessionUserInfo>>.GetCache("OnLineUsers");
-            ReturnModel<List<SeachUserInfo>> remodel = JsonConvert.DeserializeObject<ReturnModel<List<SeachUserInfo>>>(obj.ToString());
-            foreach (SeachUserInfo model in remodel.Data)
+            try
             {
-                model.IsOnline = 0;
-                if (models.Count(x => x.Id == model.Id) > 0)
+                var obj = oFriendsBLL.Friend_SeachUserInfoList(GetUserInfo().Id, SeachKey);
+                List<SessionUserInfo> models = Common.CacheHelper<List<SessionUserInfo>>.GetCache("OnLineUsers");
+                ReturnModel<List<SeachUserInfo>> remodel = JsonConvert.DeserializeObject<ReturnModel<List<SeachUserInfo>>>(obj.ToString());
+                foreach (SeachUserInfo model in remodel.Data)
                 {
-                    model.IsOnline = 1;
+                    model.IsOnline = 0;
+                    if (models != null && models.Count(x => x.Id == model.Id) > 0)
+                    {
+                        model.IsOnline = 1;
+                    }
                 }
+                return Json(remodel);
             }
-            return Json(remodel);
+            catch (Exception ex)
+            {
+                return Json(ex);
+            }
         }
 
 
@@ -60,7 +67,7 @@ namespace Mylife.Controllers
             foreach (ChatUserInfo model in remodel.Data)
             {
                 model.IsOnline = 0;
-                if (models.Count(x => x.Id == model.FriendId) > 0)
+                if (models != null && models.Count(x => x.Id == model.FriendId) > 0)
                 {
                     model.IsOnline = 1;
                 }
@@ -80,7 +87,7 @@ namespace Mylife.Controllers
             foreach (ChatUserInfo model in remodel.Data)
             {
                 model.IsOnline = 0;
-                if (models.Count(x => x.Id == model.FriendId) > 0)
+                if (models != null && models.Count(x => x.Id == model.FriendId) > 0)
                 {
                     model.IsOnline = 1;
                 }
