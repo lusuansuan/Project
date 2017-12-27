@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data">
+      <HintPath>D:\down\HoverTreeCSharpMysql\v4.5\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -52,6 +55,7 @@
     <Compile Include="CommonData.cs" />
     <Compile Include="ConfigReadHelper.cs" />
     <Compile Include="JsonHelper.cs" />
+    <Compile Include="MySqlHelper.cs" />
     <Compile Include="OADBHelperSQL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WriteLogHelper.cs" />
