@@ -1,0 +1,32 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>QQLogin</title>
+</head>
+<body>
+    <div> 
+        <input type="button"  value="点击" onclick="GetOpenId()"/>
+    </div>
+
+
+    <script src="~/Web/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+
+        function GetOpenId()
+        {
+            $.post('/QQLogin/GetOpenId', function (res) {
+                console.log(res);
+            })
+        }
+
+    </script>
+
+</body>
+</html>
